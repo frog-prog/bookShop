@@ -1,0 +1,66 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+  previewFeatures = ["fullTextSearch"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+model Book {
+  id         Int        @id @default(autoincrement())
+  endAt      Int
+  name       String     @db.VarChar(255)
+  genres     GenresOnBooks[]
+  amount     Int
+  pubYear    Int
+  author     Author     @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  authorId   Int
+  price      Int        @default(0)
+  address    Address    @relation(fields: [addressId], references: [id], onDelete: Cascade)
+  addressId  Int
+  pubHouse   PubHouse   @relation(fields: [pubHouseId],references: [id], onDelete: Cascade)
+  pubHouseId Int
+  orders     Order[]
+}
+
+model Order{
+  id         Int        @id @default(autoincrement())
+  book       Book       @relation(fields: [bookId], references: [id])
+  bookId     Int
+  status     String
+  customer   String
+}
+
+model Genre{
+  id         Int        @id @default(autoincrement())
+  name       String
+  books      GenresOnBooks[]
+}
+model PubHouse{
+  id         Int        @id @default(autoincrement())
+  name       String
+  books      Book[]
+}
+model GenresOnBooks {
+  book       Book       @relation(fields: [bookId], references: [id])
+  bookId     Int // relation scalar field (used in the `@relation` attribute above)
+  genre      Genre      @relation(fields: [genreId], references: [id])
+  genreId    Int // relation scalar field (used in the `@relation` attribute above)
+  @@id([bookId, genreId])
+}
+
+model Author {
+  id         Int        @id @default(autoincrement())
+  name       String?
+  books      Book[]
+}
+
+model Address {
+  id         Int        @id @default(autoincrement())
+  name       String?
+  books      Book[]
+}
