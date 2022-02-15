@@ -8,7 +8,7 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = "postgresql://postgres:postgres@localhost:5432/Books?schema=public"
+  url      = "postgresql://bookshop:p2r2h3g7@localhost:5432/bookshop?schema=public"
 }
 model Book {
   id         Int        @id @default(autoincrement())
